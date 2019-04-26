@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const Layouts = require('./layouts')
+const Dashboards = require('./dashboards')
 
 var mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
@@ -28,6 +29,7 @@ app.use('*', (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     next();
 })
+// All Layout Crud Operation
 
 // Get all layouts
 app.get("/layout", (req, res) => {
@@ -100,7 +102,10 @@ app.delete("/layout/:layoutId", (req, res) => {
                     message: "Layout not found with id " + req.params.layoutId
                 });
             }
-            res.json({ message: "Layout deleted successfully!" });
+            const response = {
+                "message": "Layout deleted successfully!"
+            }
+            res.json(response);
         }).catch(err => {
             if (err.kind === 'ObjectId') {
                 return res.status(404).json({
@@ -124,6 +129,88 @@ app.post("/layout", (req, res) => {
             res.status(400).send("Unable to save to database");
         });
 });
+
+// layout crud opeartion end
+
+// All Dashboard Crud Operation
+
+// Get all dashboards
+app.get("/dashboard", (req, res) => {
+    Dashboards.find()
+        .then(item => {
+            const response = {
+                "message": "Hurray!!, Request processed succesfully.",
+                "data": item
+            }
+            res.json(response);
+        })
+        .catch(err => {
+            res.status(400).json({
+                message: "Unable to fetch from database",
+                error: err
+            });
+        });
+});
+
+
+// get dashboard by its id
+app.get("/dashboard/:dashboardId", (req, res) => {
+    Dashboards.findById(req.params.dashboardId)
+        .then(dashboard => {
+            if (!dashboard) {
+                return res.status(404).json({
+                    message: "Dashboard not found with id " + req.params.dashboardId
+                });
+            }
+            res.json(dashboard);
+        }).catch(err => {
+            if (err.kind === 'ObjectId') {
+                return res.status(404).json({
+                    message: "Dashboard not found with id " + req.params.dashboardId
+                });
+            }
+            return res.status(500).json({
+                message: "Error retrieving dashboard with id " + req.params.dashboardId
+            });
+        });
+});
+
+
+// update Dashboard by its id
+app.put("/dashboard/:dashboardId", (req, res) => {
+    Dashboards.findByIdAndUpdate(req.params.dashboardId, req.body)
+        .then(dashboard => {
+            if (!dashboard) {
+                return res.status(404).json({
+                    message: "Dashboard not found with id " + req.params.dashboardId
+                });
+            }
+            res.json(dashboard);
+        }).catch(err => {
+            if (err.kind === 'ObjectId') {
+                return res.status(404).json({
+                    message: "Dashboard not found with id " + req.params.dashboardId
+                });
+            }
+            return res.status(500).json({
+                message: "Error updating dashboard with id " + req.params.dashboardId
+            });
+        });
+});
+
+//save Dashboard
+app.post("/dashboard", (req, res) => {
+    var myData = new Dashboards(req.body);
+    myData.save()
+        .then(item => {
+            res.send("Hurray!!, Dashboard saved succesfully.");
+        })
+        .catch(err => {
+            res.status(400).send("Unable to save to database");
+        });
+});
+
+// dashboard crud opration end
 
 app.listen(port, () => {
     console.log("Server listening on port " + port);
