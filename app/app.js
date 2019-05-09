@@ -199,7 +199,7 @@ app.put("/dashboard/:dashboardId", (req, res) => {
 });
 
 //save Dashboard
-app.post("/ ", (req, res) => {
+app.post("/dashboard", (req, res) => {
     var myData = new Dashboards(req.body);
     myData.save()
         .then(item => {
