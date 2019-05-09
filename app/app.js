@@ -1,6 +1,6 @@
 var express = require("express");
 var app = express();
-var port = 3000;
+var port = process.env.PORT || 2019;
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -17,14 +17,14 @@ const option = {
     useMongoClient: true
 };
 
-mongoose.connect("mongodb://localhost:27017/LayoutStudio", option).then(function () {
+mongoose.connect("mongodb://devbohre:Sipu$1113@ds153766.mlab.com:53766/application-studio", option).then(function () {
     console.log("connected")
 }, function (err) {
     //err handle
     console.log('//err handle: ', err);
-    });
+});
 
-app.use('*', (req, res, next) => { 
+app.use('*', (req, res, next) => {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
     next();
