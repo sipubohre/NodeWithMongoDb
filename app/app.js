@@ -199,7 +199,7 @@ app.put("/dashboard/:dashboardId", (req, res) => {
 });
 
 //save Dashboard
-app.post("/dashboard", (req, res) => {
+app.post("/ ", (req, res) => {
     var myData = new Dashboards(req.body);
     myData.save()
         .then(item => {
@@ -207,6 +207,31 @@ app.post("/dashboard", (req, res) => {
         })
         .catch(err => {
             res.status(400).send("Unable to save to database");
+        });
+});
+
+// delete layout by its id
+app.delete("/dashboard/:dashboardId", (req, res) => {
+    Dashboards.findByIdAndRemove(req.params.dashboardId)
+        .then(layout => {
+            if (!layout) {
+                return res.status(404).json({
+                    message: "Dashboard not found with id " + req.params.dashboardId
+                });
+            }
+            const response = {
+                "message": "Dashboard deleted successfully!"
+            }
+            res.json(response);
+        }).catch(err => {
+            if (err.kind === 'ObjectId') {
+                return res.status(404).json({
+                    message: "Dashboard not found with id " + req.params.dashboardId
+                });
+            }
+            return res.status(500).json({
+                message: "Error updating Dashboard with id " + req.params.dashboardId
+            });
         });
 });
 
