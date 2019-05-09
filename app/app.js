@@ -17,7 +17,7 @@ const option = {
     useMongoClient: true
 };
 
-mongoose.connect("mongodb://localhost:27017/LayoutStudio", option).then(function () {
+mongoose.connect("mongodb://devbohre:Sipu$1113@ds153766.mlab.com:53766/application-studio", option).then(function () {
     console.log("connected")
 }, function (err) {
     //err handle
