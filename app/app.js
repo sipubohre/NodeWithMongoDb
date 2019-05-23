@@ -27,9 +27,9 @@ mongoose.connect("mongodb://devbohre:Sipu$1113@ds153766.mlab.com:53766/applicati
 }, function (err) {
     //err handle
     console.log('//err handle: ', err);
-    });
+});
 
-app.use('*', (req, res, next) => { 
+app.use('*', (req, res, next) => {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
     next();
