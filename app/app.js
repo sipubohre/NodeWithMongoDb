@@ -1,9 +1,14 @@
 var express = require("express");
+var cors = require("cors");
+
 var app = express();
 var port = process.env.PORT || 2019;
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({
+    origin: 'https://dashboard-studio.herokuapp.com/'
+}))
 const Layouts = require('./layouts')
 const Dashboards = require('./dashboards')
 
