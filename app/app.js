@@ -9,6 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 const Layouts = require('./layouts')
 const Dashboards = require('./dashboards')
+const Merchants = require('./merchants')
 
 var mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
@@ -213,7 +214,7 @@ app.post("/dashboard", (req, res) => {
         });
 });
 
-// delete layout by its id
+// delete dashboard by its id
 app.delete("/dashboard/:dashboardId", (req, res) => {
     Dashboards.findByIdAndRemove(req.params.dashboardId)
         .then(layout => {
@@ -234,6 +235,111 @@ app.delete("/dashboard/:dashboardId", (req, res) => {
             }
             return res.status(500).json({
                 message: "Error updating Dashboard with id " + req.params.dashboardId
+            });
+        });
+});
+
+// dashboard crud opration end
+
+// All Merchants Crud Operation
+
+// Get all merchants
+app.get("/merchant", (req, res) => {
+    Merchants.find()
+        .then(item => {
+            const response = {
+                "message": "Hurray!!, Request processed succesfully.",
+                "data": item
+            }
+            res.json(response);
+        })
+        .catch(err => {
+            res.status(400).json({
+                message: "Unable to fetch from database",
+                error: err
+            });
+        });
+});
+
+
+// get merchant by its id
+app.get("/merchant/:merchantId", (req, res) => {
+    Merchants.findById(req.params.merchantId)
+        .then(merchant => {
+            if (!merchant) {
+                return res.status(404).json({
+                    message: "Merchant not found with id " + req.params.merchantId
+                });
+            }
+            res.json(merchant);
+        }).catch(err => {
+            if (err.kind === 'ObjectId') {
+                return res.status(404).json({
+                    message: "Merchant not found with id " + req.params.merchantId
+                });
+            }
+            return res.status(500).json({
+                message: "Error retrieving merchant with id " + req.params.merchantId
+            });
+        });
+});
+
+
+// update Merchant by its id
+app.put("/merchant/:merchantId", (req, res) => {
+    Merchants.findByIdAndUpdate(req.params.merchantId, req.body)
+        .then(merchant => {
+            if (!merchant) {
+                return res.status(404).json({
+                    message: "Merchant not found with id " + req.params.merchantId
+                });
+            }
+            res.json(merchant);
+        }).catch(err => {
+            if (err.kind === 'ObjectId') {
+                return res.status(404).json({
+                    message: "Merchant not found with id " + req.params.merchantId
+                });
+            }
+            return res.status(500).json({
+                message: "Error updating merchant with id " + req.params.merchantId
+            });
+        });
+});
+
+//save Merchant
+app.post("/merchant", (req, res) => {
+    var myData = new Merchants(req.body);
+    myData.save()
+        .then(item => {
+            res.send("Hurray!!, Merchant saved succesfully.");
+        })
+        .catch(err => {
+            res.status(400).send("Unable to save to database");
+        });
+});
+
+// delete merchant by its id
+app.delete("/merchant/:merchantId", (req, res) => {
+    Merchants.findByIdAndRemove(req.params.merchantId)
+        .then(merchant => {
+            if (!merchant) {
+                return res.status(404).json({
+                    message: "Merchant not found with id " + req.params.merchantId
+                });
+            }
+            const response = {
+                "message": "Merchant deleted successfully!"
+            }
+            res.json(response);
+        }).catch(err => {
+            if (err.kind === 'ObjectId') {
+                return res.status(404).json({
+                    message: "Merchant not found with id " + req.params.merchantId
+                });
+            }
+            return res.status(500).json({
+                message: "Error updating Merchant with id " + req.params.merchantId
             });
         });
 });
